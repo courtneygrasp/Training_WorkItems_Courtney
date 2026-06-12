@@ -1,0 +1,17 @@
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\bin\Debug\net10.0\Training.WorkItems.Infrastructure.deps.json
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\bin\Debug\net10.0\Training.WorkItems.Infrastructure.dll
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\bin\Debug\net10.0\Training.WorkItems.Infrastructure.pdb
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\bin\Debug\net10.0\Training.WorkItems.Application.dll
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\bin\Debug\net10.0\Training.WorkItems.Domain.dll
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\bin\Debug\net10.0\Training.WorkItems.Application.pdb
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\bin\Debug\net10.0\Training.WorkItems.Domain.pdb
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\obj\Debug\net10.0\Training.WorkItems.Infrastructure.csproj.AssemblyReference.cache
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\obj\Debug\net10.0\Training.WorkItems.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\obj\Debug\net10.0\Training.WorkItems.Infrastructure.AssemblyInfoInputs.cache
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\obj\Debug\net10.0\Training.WorkItems.Infrastructure.AssemblyInfo.cs
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\obj\Debug\net10.0\Training.WorkItems.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\obj\Debug\net10.0\Training.82861DE7.Up2Date
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\obj\Debug\net10.0\Training.WorkItems.Infrastructure.dll
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\obj\Debug\net10.0\refint\Training.WorkItems.Infrastructure.dll
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\obj\Debug\net10.0\Training.WorkItems.Infrastructure.pdb
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Infrastructure\obj\Debug\net10.0\ref\Training.WorkItems.Infrastructure.dll

@@ -1,0 +1,15 @@
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\bin\Debug\net10.0\Training.WorkItems.Application.deps.json
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\bin\Debug\net10.0\Training.WorkItems.Application.dll
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\bin\Debug\net10.0\Training.WorkItems.Application.pdb
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\bin\Debug\net10.0\Training.WorkItems.Domain.dll
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\bin\Debug\net10.0\Training.WorkItems.Domain.pdb
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\obj\Debug\net10.0\Training.WorkItems.Application.csproj.AssemblyReference.cache
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\obj\Debug\net10.0\Training.WorkItems.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\obj\Debug\net10.0\Training.WorkItems.Application.AssemblyInfoInputs.cache
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\obj\Debug\net10.0\Training.WorkItems.Application.AssemblyInfo.cs
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\obj\Debug\net10.0\Training.WorkItems.Application.csproj.CoreCompileInputs.cache
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\obj\Debug\net10.0\Training.30FCA908.Up2Date
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\obj\Debug\net10.0\Training.WorkItems.Application.dll
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\obj\Debug\net10.0\refint\Training.WorkItems.Application.dll
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\obj\Debug\net10.0\Training.WorkItems.Application.pdb
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Application\obj\Debug\net10.0\ref\Training.WorkItems.Application.dll

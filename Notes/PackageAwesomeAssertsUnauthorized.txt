@@ -1,0 +1,48 @@
+dotnet add tests/Training.WorkItems.Tests package AwesomeAssertions
+info : X.509 certificate chain validation will use the default trust store selected by .NET for code signing.
+info : X.509 certificate chain validation will use the default trust store selected by .NET for timestamping.
+info : Adding PackageReference for package 'AwesomeAssertions' into project 'C:\Lessons\Training_WorkItems\tests\Training.WorkItems.Tests\Training.WorkItems.Tests.csproj'.
+info :   GET https://pkgs.dev.azure.com/graspdev/2800300b-b6bb-479c-b0c4-07cfc1996cb7/_packaging/53bc56e0-c790-4ff9-8075-57dca0167a19/nuget/v3/registrations2-semver2/awesomeassertions/index.json
+info :   GET https://api.nuget.org/v3/registration5-gz-semver2/awesomeassertions/index.json
+info :   GET https://nuget.telerik.com/v3/registration/awesomeassertions/index.json
+info :   OK https://api.nuget.org/v3/registration5-gz-semver2/awesomeassertions/index.json 135ms
+info :   Unauthorized https://pkgs.dev.azure.com/graspdev/2800300b-b6bb-479c-b0c4-07cfc1996cb7/_packaging/53bc56e0-c790-4ff9-8075-57dca0167a19/nuget/v3/registrations2-semver2/awesomeassertions/index.json 140ms
+info :   Unauthorized https://nuget.telerik.com/v3/registration/awesomeassertions/index.json 197ms
+error: Response status code does not indicate success: 401 (Unauthorized).
+
+-------------------------------------------------------------------------------------------------------------
+
+
+The package add failed because your global NuGet config has multiple enabled package sources, including private authenticated feeds:
+
+• Grasp
+• Telerik
+• nuget.org
+
+When you ran:
+dotnet add tests/Training.WorkItems.Tests package AwesomeAssertions
+NuGet checked all enabled sources. It found the package on nuget.org, but the private Grasp and Telerik feeds returned 401 Unauthorized, so the whole command failed.
+
+I fixed it by telling dotnet to use only the public NuGet source:
+dotnet add tests/Training.WorkItems.Tests package AwesomeAssertions --source https://api.nuget.org/v3/index.json
+
+That avoided the private feeds and successfully added:
+<PackageReference Include="AwesomeAssertions" Version="9.4.0" />
+
+For future public packages, either use:
+
+	dotnet add <project> package <package-name> --source https://api.nuget.org/v3/index.json
+or 
+	fix/disable the private feeds in your NuGet configuration if you do not need them for that project.
+	
+	-------------------------------------------------------
+	
+	dotnet add tests/Training.WorkItems.Tests package Moq
+	Response status code does not indicate success: 401 (Unauthorized).
+	dotnet add tests/Training.WorkItems.Tests package Moq --source https://api.nuget.org/v3/index.json
+	
+	
+	------------------------------------
+	
+	where should docs folder be?  under root?  included in solution?  under \src? or under a project?
+	

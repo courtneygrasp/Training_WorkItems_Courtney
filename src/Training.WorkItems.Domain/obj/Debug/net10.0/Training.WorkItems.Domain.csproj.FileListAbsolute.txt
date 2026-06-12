@@ -1,0 +1,11 @@
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Domain\bin\Debug\net10.0\Training.WorkItems.Domain.deps.json
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Domain\bin\Debug\net10.0\Training.WorkItems.Domain.dll
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Domain\bin\Debug\net10.0\Training.WorkItems.Domain.pdb
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Domain\obj\Debug\net10.0\Training.WorkItems.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Domain\obj\Debug\net10.0\Training.WorkItems.Domain.AssemblyInfoInputs.cache
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Domain\obj\Debug\net10.0\Training.WorkItems.Domain.AssemblyInfo.cs
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Domain\obj\Debug\net10.0\Training.WorkItems.Domain.csproj.CoreCompileInputs.cache
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Domain\obj\Debug\net10.0\Training.WorkItems.Domain.dll
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Domain\obj\Debug\net10.0\refint\Training.WorkItems.Domain.dll
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Domain\obj\Debug\net10.0\Training.WorkItems.Domain.pdb
+C:\Lessons\Training_WorkItems\src\Training.WorkItems.Domain\obj\Debug\net10.0\ref\Training.WorkItems.Domain.dll
