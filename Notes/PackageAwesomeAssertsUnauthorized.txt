@@ -46,3 +46,16 @@ or
 	
 	where should docs folder be?  under root?  included in solution?  under \src? or under a project?
 	
+	-------------------------------------------------------------------
+	
+Prepare the short explanation required by the lesson: Application should not reference Infrastructure because the application layer defines use cases and abstractions, while infrastructure provides implementation details like SQL/auth adapters. Keeping the dependency one-way lets you test application logic without infrastructure and swap infrastructure details without changing use cases.
+
+After that, you are at the lesson’s “submit a pull request” point.
+
+---------------------------------
+
+https://github.com/courtneygrasp/Training_WorkItems_Courtney
+
+https://github.com/courtneygrasp/Training_WorkItems_Courtney/pull/1
+	
+	
