@@ -11,8 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Training.WorkItems.Application\Training.WorkItems.Application.csproj" />
-    <ProjectReference Include="..\Training.WorkItems.Infrastructure\Training.WorkItems.Infrastructure.csproj" />
+    <ProjectReference Include="..\Training.WorkItems.Core\Training.WorkItems.Core.csproj" />
   </ItemGroup>
 
 </Project>
