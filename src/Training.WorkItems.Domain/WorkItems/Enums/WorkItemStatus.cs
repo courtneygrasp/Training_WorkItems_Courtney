@@ -4,5 +4,6 @@ public enum WorkItemStatus
 {
     New = 0,
     InProgress = 1,
-    Completed = 2
+    Completed = 2,
+    Closed = 3
 }

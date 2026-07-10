@@ -11,4 +11,6 @@ public interface IWorkItemRepository
         TenantId tenantId,
         WorkItemId workItemId,
         CancellationToken cancellationToken);
+
+    Task UpdateAsync(WorkItem workItem, CancellationToken cancellationToken);
 }

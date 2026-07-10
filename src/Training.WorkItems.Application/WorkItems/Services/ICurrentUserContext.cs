@@ -7,4 +7,5 @@ public interface ICurrentUserContext
     TenantId TenantId { get; }
     Guid UserId { get; }
     string? DisplayName { get; }
+    bool CanCloseWorkItems { get; }
 }

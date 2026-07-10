@@ -2,6 +2,11 @@ namespace Training.WorkItems.Domain.Common;
 
 public static class Guard
 {
+    public static void NotNull<T>(T? value, string? parameterName = null) where T : class
+    {
+        ArgumentNullException.ThrowIfNull(value, parameterName ?? nameof(value));
+    }
+
     public static void NotNullOrWhiteSpace(string value, string? parameterName = null)
     {
         if (string.IsNullOrWhiteSpace(value))

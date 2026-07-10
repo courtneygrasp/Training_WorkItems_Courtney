@@ -2,6 +2,7 @@ using Training.WorkItems.Application.Common;
 using Training.WorkItems.Application.WorkItems.Mapping;
 using Training.WorkItems.Application.WorkItems.Repositories;
 using Training.WorkItems.Application.WorkItems.Services;
+using Training.WorkItems.Domain.Common;
 using Training.WorkItems.Domain.WorkItems.Entities;
 using Training.WorkItems.Domain.WorkItems.ValueTypes;
 
@@ -16,6 +17,8 @@ public sealed class CreateWorkItemUseCase(
         CreateWorkItemCommand command,
         CancellationToken cancellationToken)
     {
+        Guard.NotNull(command);
+
         WorkItemTitle title;
 
         try

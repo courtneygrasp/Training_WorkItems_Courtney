@@ -106,6 +106,9 @@ public sealed class CreateWorkItemUseCaseTests
 
             return Task.FromResult(workItem);
         }
+
+        public Task UpdateAsync(WorkItem workItem, CancellationToken cancellationToken) =>
+            Task.CompletedTask;
     }
 
     private sealed class StubCurrentUserContext(TenantId tenantId) : ICurrentUserContext
@@ -113,6 +116,7 @@ public sealed class CreateWorkItemUseCaseTests
         public TenantId TenantId { get; } = tenantId;
         public Guid UserId { get; } = Guid.NewGuid();
         public string? DisplayName { get; } = "Test User";
+        public bool CanCloseWorkItems { get; } = true;
     }
 
     private sealed class StubSystemClock(DateTimeOffset utcNow) : ISystemClock

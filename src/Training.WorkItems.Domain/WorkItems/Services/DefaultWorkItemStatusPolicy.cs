@@ -15,6 +15,8 @@ public sealed class DefaultWorkItemStatusPolicy : IWorkItemStatusPolicy
         {
             (WorkItemStatus.New, WorkItemStatus.InProgress) => true,
             (WorkItemStatus.InProgress, WorkItemStatus.Completed) => true,
+            (WorkItemStatus.InProgress, WorkItemStatus.Closed) => true,
+            (WorkItemStatus.Completed, WorkItemStatus.Closed) => true,
             _ => false
         };
     }

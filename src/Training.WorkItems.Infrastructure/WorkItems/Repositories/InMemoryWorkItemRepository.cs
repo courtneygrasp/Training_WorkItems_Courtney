@@ -24,4 +24,9 @@ public sealed class InMemoryWorkItemRepository : IWorkItemRepository
 
         return Task.FromResult(workItem);
     }
+
+    public Task UpdateAsync(WorkItem workItem, CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
 }
