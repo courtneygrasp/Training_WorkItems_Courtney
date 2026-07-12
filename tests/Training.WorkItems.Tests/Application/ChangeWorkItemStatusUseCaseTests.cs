@@ -1,12 +1,12 @@
 using AwesomeAssertions;
 using Training.WorkItems.Application.WorkItems.Repositories;
-using Training.WorkItems.Application.WorkItems.Services;
 using Training.WorkItems.Application.WorkItems.UseCases;
 using Training.WorkItems.Application.WorkItems.Validation;
 using Training.WorkItems.Domain.WorkItems.Entities;
 using Training.WorkItems.Domain.WorkItems.Enums;
 using Training.WorkItems.Domain.WorkItems.Services;
 using Training.WorkItems.Domain.WorkItems.ValueTypes;
+using Training.WorkItems.Tests.Application.WorkItems.Fakes;
 
 namespace Training.WorkItems.Tests.Application;
 
@@ -98,7 +98,7 @@ public sealed class ChangeWorkItemStatusUseCaseTests
     {
         return new ChangeWorkItemStatusUseCase(
             repository,
-            new StubCurrentUserContext(tenantId ?? TenantId.Create(Guid.NewGuid()), canCloseWorkItems),
+            new FakeCurrentUserContext(tenantId ?? TenantId.Create(Guid.NewGuid()), canCloseWorkItems),
             new DefaultWorkItemStatusPolicy(),
             new ChangeWorkItemStatusValidator());
     }
@@ -125,39 +125,6 @@ public sealed class ChangeWorkItemStatusUseCaseTests
         var workItem = CreateInProgressWorkItem(tenantId);
         workItem.ChangeStatus(WorkItemStatus.Closed, new DefaultWorkItemStatusPolicy());
         return workItem;
-    }
-
-    private sealed class InMemoryWorkItemRepository : IWorkItemRepository
-    {
-        private readonly List<WorkItem> _items = [];
-
-        public Task AddAsync(WorkItem workItem, CancellationToken cancellationToken)
-        {
-            _items.Add(workItem);
-            return Task.CompletedTask;
-        }
-
-        public Task<WorkItem?> GetByIdAsync(
-            TenantId tenantId,
-            WorkItemId workItemId,
-            CancellationToken cancellationToken)
-        {
-            var workItem = _items.SingleOrDefault(x => x.TenantId == tenantId && x.Id == workItemId);
-            return Task.FromResult(workItem);
-        }
-
-        public Task<IReadOnlyCollection<WorkItem>> ListAsync(
-            TenantId tenantId,
-            CancellationToken cancellationToken)
-        {
-            IReadOnlyCollection<WorkItem> results = _items
-                .Where(x => x.TenantId == tenantId)
-                .ToArray();
-            return Task.FromResult(results);
-        }
-
-        public Task UpdateAsync(WorkItem workItem, CancellationToken cancellationToken) =>
-            Task.CompletedTask;
     }
 
     // Finds items by ID only — used to test validator paths that require crossing tenant boundaries.
@@ -187,13 +154,5 @@ public sealed class ChangeWorkItemStatusUseCaseTests
 
         public Task UpdateAsync(WorkItem workItem, CancellationToken cancellationToken) =>
             Task.CompletedTask;
-    }
-
-    private sealed class StubCurrentUserContext(TenantId tenantId, bool canCloseWorkItems = true) : ICurrentUserContext
-    {
-        public TenantId TenantId { get; } = tenantId;
-        public Guid UserId { get; } = Guid.NewGuid();
-        public string? DisplayName { get; } = "Test User";
-        public bool CanCloseWorkItems { get; } = canCloseWorkItems;
     }
 }

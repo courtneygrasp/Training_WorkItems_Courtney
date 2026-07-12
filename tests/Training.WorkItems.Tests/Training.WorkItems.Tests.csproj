@@ -23,6 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Training.WorkItems.Api\Training.WorkItems.Api.csproj" />
     <ProjectReference Include="..\..\src\Training.WorkItems.Application\Training.WorkItems.Application.csproj" />
     <ProjectReference Include="..\..\src\Training.WorkItems.Core\Training.WorkItems.Core.csproj" />
     <ProjectReference Include="..\..\src\Training.WorkItems.Domain\Training.WorkItems.Domain.csproj" />

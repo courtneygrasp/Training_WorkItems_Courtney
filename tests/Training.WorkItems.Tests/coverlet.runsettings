@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <Exclude>
+            [*]Microsoft.AspNetCore.OpenApi.Generated.*,
+            [*]System.Runtime.CompilerServices.*,
+            [Training.WorkItems.Api]Training.WorkItems.Api.Program,
+            [Training.WorkItems.Api]Training.WorkItems.Api.Auth.*,
+            [Training.WorkItems.Api]Training.WorkItems.Api.CompositionRoot.*,
+            [Training.WorkItems.Infrastructure]Training.WorkItems.Infrastructure.WorkItems.Repositories.SqlWorkItemRepository*,
+            [Training.WorkItems.Infrastructure]Training.WorkItems.Infrastructure.Authentication.*
+          </Exclude>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

@@ -37,6 +37,56 @@ public sealed class WorkItemTests
     }
 
     [Fact]
+    public void Rehydrate_WithGivenStatus_RestoresWorkItemWithThatStatus()
+    {
+        var id = WorkItemId.Create(Guid.NewGuid());
+        var tenantId = TenantId.Create(Guid.NewGuid());
+        var title = WorkItemTitle.Create("Fix login bug");
+        var createdAt = DateTimeOffset.UtcNow;
+
+        var workItem = WorkItem.Rehydrate(id, tenantId, title, "Some description", WorkItemStatus.InProgress, createdAt);
+
+        workItem.Id.Should().Be(id);
+        workItem.TenantId.Should().Be(tenantId);
+        workItem.Title.Should().Be(title);
+        workItem.Description.Should().Be("Some description");
+        workItem.Status.Should().Be(WorkItemStatus.InProgress);
+        workItem.CreatedAt.Should().Be(createdAt);
+    }
+
+    [Fact]
+    public void ChangeTitle_WithNewTitle_UpdatesTitle()
+    {
+        var workItem = CreateWorkItem("Original Title");
+        var newTitle = WorkItemTitle.Create("Updated Title");
+
+        workItem.ChangeTitle(newTitle);
+
+        workItem.Title.Value.Should().Be("Updated Title");
+    }
+
+    [Fact]
+    public void ChangeDescription_WithNewDescription_UpdatesDescription()
+    {
+        var workItem = CreateWorkItem("Fix login bug");
+
+        workItem.ChangeDescription("New description text");
+
+        workItem.Description.Should().Be("New description text");
+    }
+
+    [Fact]
+    public void ChangeDescription_WithNull_ClearsDescription()
+    {
+        var workItem = CreateWorkItem("Fix login bug");
+        workItem.ChangeDescription("Some description");
+
+        workItem.ChangeDescription(null);
+
+        workItem.Description.Should().BeNull();
+    }
+
+    [Fact]
     public void ChangeStatus_WithValidTransition_ChangesStatus()
     {
         var workItem = CreateWorkItem("Fix login bug");

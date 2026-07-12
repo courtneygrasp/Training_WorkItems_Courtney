@@ -1,10 +1,8 @@
 using AwesomeAssertions;
-using Training.WorkItems.Application.Common;
-using Training.WorkItems.Application.WorkItems.Repositories;
-using Training.WorkItems.Application.WorkItems.Services;
 using Training.WorkItems.Application.WorkItems.UseCases;
-using Training.WorkItems.Domain.WorkItems.Entities;
 using Training.WorkItems.Domain.WorkItems.ValueTypes;
+using Training.WorkItems.Tests.Application.Time;
+using Training.WorkItems.Tests.Application.WorkItems.Fakes;
 
 namespace Training.WorkItems.Tests.Application;
 
@@ -80,57 +78,7 @@ public sealed class CreateWorkItemUseCaseTests
     {
         return new CreateWorkItemUseCase(
             repository,
-            new StubCurrentUserContext(tenantId ?? TenantId.Create(Guid.NewGuid())),
-            new StubSystemClock(utcNow ?? DateTimeOffset.UtcNow));
-    }
-
-    private sealed class InMemoryWorkItemRepository : IWorkItemRepository
-    {
-        private readonly List<WorkItem> _items = [];
-
-        public IReadOnlyCollection<WorkItem> Items => _items;
-
-        public Task AddAsync(WorkItem workItem, CancellationToken cancellationToken)
-        {
-            _items.Add(workItem);
-
-            return Task.CompletedTask;
-        }
-
-        public Task<WorkItem?> GetByIdAsync(
-            TenantId tenantId,
-            WorkItemId workItemId,
-            CancellationToken cancellationToken)
-        {
-            var workItem = _items.SingleOrDefault(x => x.TenantId == tenantId && x.Id == workItemId);
-
-            return Task.FromResult(workItem);
-        }
-
-        public Task<IReadOnlyCollection<WorkItem>> ListAsync(
-            TenantId tenantId,
-            CancellationToken cancellationToken)
-        {
-            IReadOnlyCollection<WorkItem> results = _items
-                .Where(x => x.TenantId == tenantId)
-                .ToArray();
-            return Task.FromResult(results);
-        }
-
-        public Task UpdateAsync(WorkItem workItem, CancellationToken cancellationToken) =>
-            Task.CompletedTask;
-    }
-
-    private sealed class StubCurrentUserContext(TenantId tenantId) : ICurrentUserContext
-    {
-        public TenantId TenantId { get; } = tenantId;
-        public Guid UserId { get; } = Guid.NewGuid();
-        public string? DisplayName { get; } = "Test User";
-        public bool CanCloseWorkItems { get; } = true;
-    }
-
-    private sealed class StubSystemClock(DateTimeOffset utcNow) : ISystemClock
-    {
-        public DateTimeOffset UtcNow { get; } = utcNow;
+            new FakeCurrentUserContext(tenantId ?? TenantId.Create(Guid.NewGuid())),
+            new FakeSystemClock(utcNow ?? DateTimeOffset.UtcNow));
     }
 }
