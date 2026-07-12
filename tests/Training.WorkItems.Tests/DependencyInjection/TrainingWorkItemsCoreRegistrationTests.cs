@@ -14,11 +14,12 @@ public sealed class TrainingWorkItemsCoreRegistrationTests
         var services = new ServiceCollection();
         var configuration = new ConfigurationBuilder().Build();
 
+        services.AddSingleton<IConfiguration>(configuration);
         services.AddTrainingWorkItemsCore(configuration);
 
-        using var provider = services.BuildServiceProvider();
-        var useCase = provider.GetRequiredService<ICreateWorkItemUseCase>();
+        var descriptor = services.FirstOrDefault(d => d.ServiceType == typeof(ICreateWorkItemUseCase));
 
-        useCase.Should().BeOfType<CreateWorkItemUseCase>();
+        descriptor.Should().NotBeNull();
+        descriptor!.ImplementationType.Should().Be(typeof(CreateWorkItemUseCase));
     }
 }

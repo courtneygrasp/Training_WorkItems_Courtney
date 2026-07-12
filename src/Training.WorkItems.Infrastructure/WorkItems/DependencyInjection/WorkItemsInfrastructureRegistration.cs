@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Training.WorkItems.Application.Common;
 using Training.WorkItems.Application.WorkItems.Services;
+using Training.WorkItems.Infrastructure.Authentication;
 using Training.WorkItems.Infrastructure.WorkItems.Services;
 using Training.WorkItems.Infrastructure.WorkItems.Storage;
 
@@ -14,7 +15,8 @@ public static class WorkItemsInfrastructureRegistration
         IConfiguration configuration)
     {
         services.AddWorkItemStorage();
-        services.AddScoped<ICurrentUserContext, DefaultCurrentUserContext>();
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUserContext, HttpContextCurrentUserContext>();
         services.AddSingleton<ISystemClock, SystemClock>();
 
         return services;
