@@ -12,5 +12,9 @@ public interface IWorkItemRepository
         WorkItemId workItemId,
         CancellationToken cancellationToken);
 
+    Task<IReadOnlyCollection<WorkItem>> ListAsync(
+        TenantId tenantId,
+        CancellationToken cancellationToken);
+
     Task UpdateAsync(WorkItem workItem, CancellationToken cancellationToken);
 }

@@ -46,6 +46,17 @@ public sealed class WorkItem
             createdAt);
     }
 
+    public static WorkItem Rehydrate(
+        WorkItemId id,
+        TenantId tenantId,
+        WorkItemTitle title,
+        string? description,
+        WorkItemStatus status,
+        DateTimeOffset createdAt)
+    {
+        return new WorkItem(id, tenantId, title, description, status, createdAt);
+    }
+
     public void ChangeTitle(WorkItemTitle title)
     {
         Title = title;

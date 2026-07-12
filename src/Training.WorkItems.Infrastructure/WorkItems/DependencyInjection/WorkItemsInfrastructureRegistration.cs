@@ -1,10 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Training.WorkItems.Application.Common;
-using Training.WorkItems.Application.WorkItems.Repositories;
 using Training.WorkItems.Application.WorkItems.Services;
-using Training.WorkItems.Infrastructure.WorkItems.Repositories;
 using Training.WorkItems.Infrastructure.WorkItems.Services;
+using Training.WorkItems.Infrastructure.WorkItems.Storage;
 
 namespace Training.WorkItems.Infrastructure.WorkItems.DependencyInjection;
 
@@ -14,7 +13,7 @@ public static class WorkItemsInfrastructureRegistration
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddScoped<IWorkItemRepository, InMemoryWorkItemRepository>();
+        services.AddWorkItemStorage();
         services.AddScoped<ICurrentUserContext, DefaultCurrentUserContext>();
         services.AddSingleton<ISystemClock, SystemClock>();
 

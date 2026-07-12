@@ -107,6 +107,16 @@ public sealed class CreateWorkItemUseCaseTests
             return Task.FromResult(workItem);
         }
 
+        public Task<IReadOnlyCollection<WorkItem>> ListAsync(
+            TenantId tenantId,
+            CancellationToken cancellationToken)
+        {
+            IReadOnlyCollection<WorkItem> results = _items
+                .Where(x => x.TenantId == tenantId)
+                .ToArray();
+            return Task.FromResult(results);
+        }
+
         public Task UpdateAsync(WorkItem workItem, CancellationToken cancellationToken) =>
             Task.CompletedTask;
     }

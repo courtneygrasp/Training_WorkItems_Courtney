@@ -146,6 +146,16 @@ public sealed class ChangeWorkItemStatusUseCaseTests
             return Task.FromResult(workItem);
         }
 
+        public Task<IReadOnlyCollection<WorkItem>> ListAsync(
+            TenantId tenantId,
+            CancellationToken cancellationToken)
+        {
+            IReadOnlyCollection<WorkItem> results = _items
+                .Where(x => x.TenantId == tenantId)
+                .ToArray();
+            return Task.FromResult(results);
+        }
+
         public Task UpdateAsync(WorkItem workItem, CancellationToken cancellationToken) =>
             Task.CompletedTask;
     }
@@ -169,6 +179,11 @@ public sealed class ChangeWorkItemStatusUseCaseTests
             var workItem = _items.SingleOrDefault(x => x.Id == workItemId);
             return Task.FromResult(workItem);
         }
+
+        public Task<IReadOnlyCollection<WorkItem>> ListAsync(
+            TenantId tenantId,
+            CancellationToken cancellationToken) =>
+            Task.FromResult<IReadOnlyCollection<WorkItem>>(Array.Empty<WorkItem>());
 
         public Task UpdateAsync(WorkItem workItem, CancellationToken cancellationToken) =>
             Task.CompletedTask;
