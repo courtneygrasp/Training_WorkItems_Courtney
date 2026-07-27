@@ -4,7 +4,7 @@ using Training.WorkItems.Api.WorkItems.Contracts.Requests;
 using Training.WorkItems.Api.WorkItems.Contracts.Responses;
 using Training.WorkItems.Application.WorkItems.UseCases;
 
-namespace Training.WorkItems.Api.WorkItems;
+namespace Training.WorkItems.Api.WorkItems.Controllers;
 
 [ApiController]
 [Authorize]

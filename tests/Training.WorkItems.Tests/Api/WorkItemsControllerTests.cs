@@ -1,7 +1,7 @@
 using AwesomeAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Training.WorkItems.Api.WorkItems;
+using Training.WorkItems.Api.WorkItems.Controllers;
 using Training.WorkItems.Api.WorkItems.Contracts.Requests;
 using Training.WorkItems.Application.Common;
 using Training.WorkItems.Application.WorkItems.UseCases;
