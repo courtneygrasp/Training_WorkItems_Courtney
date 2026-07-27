@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Training.WorkItems.Infrastructure.WorkItems.Repositories;
 
 public sealed record WorkItemStorageRecord
 {
+    [Key]
     public required Guid WorkItemId { get; init; }
     public required Guid TenantId { get; init; }
     public required string Title { get; init; }

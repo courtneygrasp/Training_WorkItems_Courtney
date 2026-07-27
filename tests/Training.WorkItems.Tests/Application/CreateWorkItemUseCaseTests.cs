@@ -79,6 +79,7 @@ public sealed class CreateWorkItemUseCaseTests
         return new CreateWorkItemUseCase(
             repository,
             new FakeCurrentUserContext(tenantId ?? TenantId.Create(Guid.NewGuid())),
-            new FakeSystemClock(utcNow ?? DateTimeOffset.UtcNow));
+            new FakeSystemClock(utcNow ?? DateTimeOffset.UtcNow),
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<CreateWorkItemUseCase>.Instance);
     }
 }

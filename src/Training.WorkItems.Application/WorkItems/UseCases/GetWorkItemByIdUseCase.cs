@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Training.WorkItems.Application.Common;
 using Training.WorkItems.Application.WorkItems.Mapping;
 using Training.WorkItems.Application.WorkItems.Repositories;
@@ -9,7 +10,8 @@ namespace Training.WorkItems.Application.WorkItems.UseCases;
 
 public sealed class GetWorkItemByIdUseCase(
     IWorkItemRepository workItems,
-    ICurrentUserContext currentUser) : IGetWorkItemByIdUseCase
+    ICurrentUserContext currentUser,
+    ILogger<GetWorkItemByIdUseCase> logger) : IGetWorkItemByIdUseCase
 {
     public async Task<ApplicationResult<WorkItemResult>> ExecuteAsync(
         GetWorkItemByIdQuery query,
@@ -22,7 +24,12 @@ public sealed class GetWorkItemByIdUseCase(
 
         if (workItem is null)
         {
-            return ApplicationResult<WorkItemResult>.Invalid("Work item not found.");
+            logger.LogInformation(
+                "Work item {WorkItemId} not found for tenant {TenantId}.",
+                workItemId.Value,
+                currentUser.TenantId.Value);
+
+            return ApplicationResult<WorkItemResult>.NotFound();
         }
 
         return ApplicationResult<WorkItemResult>.Success(workItem.ToResult());

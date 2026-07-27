@@ -1,0 +1,71 @@
+# Training.WorkItems API
+# Rider: click the green "Run" gutter icon next to any request to send it.
+#
+# AUTH SETUP (required before any WorkItems request):
+#   1. Run the project and open http://localhost:5057/auth/start in your browser
+#   2. Complete the SSO login flow
+#   3. Open browser DevTools → Application → Cookies → http://localhost:5057 (not https)
+#   4. Copy the value of .AspNetCore.Cookies and paste it below
+
+@baseUrl = http://localhost:5057
+@sessionCookie = .AspNetCore.Cookies=CfDJ8Eq3th_91l1EkI0QnJ6EJlpm-xJmDD8IiqHmRccgpVgXWZyvKWZ8hLiPNg6JMd3lYOkpjHbvrwhAJ1dZjYFmcsJ-V4_42iInpURaR_-kN99Z0vtwvd4jUddy0DYsA1vYLMNDxR42pLRtI_4DfLdHIip3_cCfH3CVrDCl9tkysMJL009W5ADwb1xhACEROXZRrtd4iNWmExvIREzMYBDpjnK4mnU6flbxfzXZ3lLCF6m-GDRfBz2Ao5rWp-LqHgQcPIBijtb3Z_x4XG5BpcLiyMqFTxC7QkKeV87XdHlJdZcPBmQHb9q4EIRE4Jl7gjzlUSyzybHLbPwH-uri45FhqPymVfqR8PKhCKZOU5yR6JfFf9KxCx9fT6iMcT0KMxewdJxc-__KnAqOJFMEXsZlH8Pv0Tj56-NagQLqKohqRW-tm_U7sP5aMXoKzIIrUDzSJTXy8OckBzn67DDN3u6gPVB29FNkHV6ED4TIy5qEwi3vJ70uKN4hByy00sQp2ewiuLeP3VxvRjtyklZMKZlLqDV_rwXuc6QdXcMF4SLgnWfbx8zk_xWpNlXK8A-ZUVMA8rb4ZAqM5rSi90RH6a29JXtgr3eeZI8EumbiYf6fYqOp_QCa66QVA6EfDsWk87fWzdrG5fadIWVg4SmEBrDpu5zUJ6PTokkWJExmhmIX4-jPHJXxuRE6TZrUWyDBG5KolW97JitB_8E-ZR_WO75wstN_-QvsiGMw4kQf9JIgw3EfLaNaKLUq5UugjgEmlQZcS52Q4RFBbl5-XzsBbpEhpBdJjxoeNsI7c2S66WQXY7_mYX1r0vg2MxlaGcFVKPvIPnMefGfIi1vCYNV_7t9cho3MTpJzW1i9CNgc7hO5sTHQnwecxtiS9cmLY3Pgl4Duw9s9e3sniJXOTYwuk_tAQkmBOINgWf3BqpHBqBEsOW4AFNzGaUsLvTbG4kQpCvsXM2PmvlxACSOzRCXGjlnGyF3udBuPInRqdMHz5fPMFJZ7x_jebrgZqIWYmyLFa-t2NCm0IQn3c52n8osZXCOqZ7pxmb0iUAkkkJ6XufJPbKA06TpxpC3dX9-h13pd7JsNP7V7efEAMyTcB0k77OwR_CKfmkMed_VFH2uNDORo3xOxPS0F7xb_snCRSrt4H8izsxx4wmkzqv3h9nqB9g-KclnhcbyW27VHj2IB83R3ACOYbr7D_ysGdI3mpB_CiIiyWUjs6E0webE6TwFG-ywdExaO-MSvIdW5AT-iMBkVTea5kvmEVtec2UlRBv8GPLmc7S9BOcYzMf9Rm15RTbrG9M7q_JKIDaWkMwSQmzKvAecX0KWI83ysvbJoOg7bzsD57tU0UFKVH3uc-BJbQ27dAufFwN4N-m915iwWC66NBpEBH6IlPTkmRvQzNwy4WqfBsAKYnut1HiTEfaVmmzi0F64r1tm_yUjtgoCbxHK-4Q7b24WdO3U2J2jJ_nxTKlkUa4sUImhZAXmlPlrTnIVrW-WXj3WAAfjt6YDCVcUWwtXfQLNvxHNRkxWlg5i0TJQlxzxdIche8GMb9McFt1qLADnl7PE_4Btd2nTWJ0t5HZbvRiaB7d-bNQvCjzg3kRpwk42LjHEFjwBNClk1jP691t-2uLulKsLXkoWNDufkZMrP00yUymgqwZK8EWNMiEk8BAGQUpg3POU6wS-sgodtGukXud_Vqf1345Pc-APcOp83oPRTmw-usoCjtCTruSWEQB4ZHYh26VHfa8jQGnV9zezkJWYsTsf9LSHk0TGEtaCcmpxHm9qFcU5XtxIVT-gtk2rYRdeAknNagPG7Kq7nzbTgXl7vHpbZf0vjInhbLm4H8OvNNEDy89vOuPQtkyDNPTEMCj65HHx2MHTrHto_WDlD32TT9L4AwYNLUFlQbrgjv6RrNSAfLkGy6PRe_BEiEb-CUc7JzhIvD2MZOobETGgXDPxgosszF-wJFUti_5_c8Qp-tTFkFq7ZH4xY7hLQoamTD7RKFA3x9EZ1Ewfa-MaxtzM_Y5uzX6Wd9_xLeVrpg4NJh_qQ5U2v0iAoig6DuA
+
+# After creating a work item, replace this with the id from the response
+@workItemId = 99388424-2b5c-4d35-87e1-a5b9f80e6c83
+
+
+### ─── Create Work Item ───────────────────────────────────────────────────────
+
+POST {{baseUrl}}/api/workitems
+Content-Type: application/json
+Cookie: {{sessionCookie}}
+
+{
+  "title": "My first work item",
+  "description": "Testing the live database connection"
+}
+
+
+### ─── List All Work Items ────────────────────────────────────────────────────
+
+GET {{baseUrl}}/api/workitems
+Cookie: {{sessionCookie}}
+
+
+### ─── Get Work Item By ID ────────────────────────────────────────────────────
+
+GET {{baseUrl}}/api/workitems/{{workItemId}}
+Cookie: {{sessionCookie}}
+
+
+### ─── Change Status → InProgress ────────────────────────────────────────────
+
+PATCH {{baseUrl}}/api/workitems/{{workItemId}}/status
+Content-Type: application/json
+Cookie: {{sessionCookie}}
+
+{
+  "status": 1
+}
+
+
+### ─── Change Status → Completed ─────────────────────────────────────────────
+
+PATCH {{baseUrl}}/api/workitems/{{workItemId}}/status
+Content-Type: application/json
+Cookie: {{sessionCookie}}
+
+{
+  "status": 2
+}
+
+
+### ─── Change Status → Closed ─────────────────────────────────────────────────
+
+PATCH {{baseUrl}}/api/workitems/{{workItemId}}/status
+Content-Type: application/json
+Cookie: {{sessionCookie}}
+
+{
+  "status": 3
+}

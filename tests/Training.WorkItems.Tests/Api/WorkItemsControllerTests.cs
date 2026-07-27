@@ -71,7 +71,7 @@ public sealed class WorkItemsControllerTests
     {
         _getWorkItemById
             .Setup(x => x.ExecuteAsync(It.IsAny<GetWorkItemByIdQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(ApplicationResult<WorkItemResult>.Invalid("Not found."));
+            .ReturnsAsync(ApplicationResult<WorkItemResult>.NotFound());
 
         var actionResult = await CreateController().GetById(Guid.NewGuid(), CancellationToken.None);
 
@@ -116,7 +116,7 @@ public sealed class WorkItemsControllerTests
     }
 
     [Fact]
-    public async Task ChangeStatus_WhenFails_Returns400BadRequest()
+    public async Task ChangeStatus_WhenInvalid_Returns400BadRequest()
     {
         _changeWorkItemStatus
             .Setup(x => x.ExecuteAsync(It.IsAny<ChangeWorkItemStatusCommand>(), It.IsAny<CancellationToken>()))
@@ -129,5 +129,36 @@ public sealed class WorkItemsControllerTests
 
         actionResult.Should().BeOfType<BadRequestObjectResult>()
             .Which.StatusCode.Should().Be(400);
+    }
+
+    [Fact]
+    public async Task ChangeStatus_WhenNotFound_Returns404NotFound()
+    {
+        _changeWorkItemStatus
+            .Setup(x => x.ExecuteAsync(It.IsAny<ChangeWorkItemStatusCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(ApplicationResult<WorkItemResult>.NotFound());
+
+        var actionResult = await CreateController().ChangeStatus(
+            Guid.NewGuid(),
+            new ChangeWorkItemStatusRequest { Status = WorkItemStatus.InProgress },
+            CancellationToken.None);
+
+        actionResult.Should().BeOfType<NotFoundResult>()
+            .Which.StatusCode.Should().Be(404);
+    }
+
+    [Fact]
+    public async Task ChangeStatus_WhenForbidden_Returns403Forbidden()
+    {
+        _changeWorkItemStatus
+            .Setup(x => x.ExecuteAsync(It.IsAny<ChangeWorkItemStatusCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(ApplicationResult<WorkItemResult>.Forbidden());
+
+        var actionResult = await CreateController().ChangeStatus(
+            Guid.NewGuid(),
+            new ChangeWorkItemStatusRequest { Status = WorkItemStatus.Closed },
+            CancellationToken.None);
+
+        actionResult.Should().BeOfType<ForbidResult>();
     }
 }

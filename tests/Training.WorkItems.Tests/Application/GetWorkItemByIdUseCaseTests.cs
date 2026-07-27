@@ -51,7 +51,7 @@ public sealed class GetWorkItemByIdUseCaseTests
 
         var result = await useCase.ExecuteAsync(query, CancellationToken.None);
 
-        result.Succeeded.Should().BeFalse();
+        result.Status.Should().Be(Training.WorkItems.Application.Common.ResultStatus.NotFound);
     }
 
     [Fact]
@@ -70,7 +70,8 @@ public sealed class GetWorkItemByIdUseCaseTests
     {
         return new GetWorkItemByIdUseCase(
             repository,
-            new FakeCurrentUserContext(tenantId ?? TenantId.Create(Guid.NewGuid())));
+            new FakeCurrentUserContext(tenantId ?? TenantId.Create(Guid.NewGuid())),
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<GetWorkItemByIdUseCase>.Instance);
     }
 
     private static WorkItem CreateWorkItem(TenantId tenantId) =>

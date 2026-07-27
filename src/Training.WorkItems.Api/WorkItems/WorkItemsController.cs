@@ -23,14 +23,8 @@ public sealed class WorkItemsController(
         var command = new CreateWorkItemCommand(request.Title, request.Description);
         var result = await createWorkItem.ExecuteAsync(command, cancellationToken);
 
-        if (!result.Succeeded)
-        {
-            return BadRequest(new { error = result.ErrorMessage, failures = result.Failures });
-        }
-
-        var response = ToResponse(result.Value!);
-
-        return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
+        return result.ToActionResult(workItem =>
+            CreatedAtAction(nameof(GetById), new { id = workItem.Id }, ToResponse(workItem)));
     }
 
     [HttpGet("{id:guid}")]
@@ -39,12 +33,7 @@ public sealed class WorkItemsController(
         var query = new GetWorkItemByIdQuery(id);
         var result = await getWorkItemById.ExecuteAsync(query, cancellationToken);
 
-        if (!result.Succeeded)
-        {
-            return NotFound();
-        }
-
-        return Ok(ToResponse(result.Value!));
+        return result.ToActionResult(workItem => Ok(ToResponse(workItem)));
     }
 
     [HttpGet]
@@ -52,9 +41,11 @@ public sealed class WorkItemsController(
     {
         var result = await listWorkItems.ExecuteAsync(cancellationToken);
 
-        var responses = result.Value!.Select(ToResponse).ToList();
-
-        return Ok(new ListWorkItemsResponse(responses, Page: 0, PageSize: responses.Count, TotalCount: responses.Count));
+        return result.ToActionResult(items =>
+        {
+            var responses = items.Select(ToResponse).ToList();
+            return Ok(new ListWorkItemsResponse(responses, Page: 0, PageSize: responses.Count, TotalCount: responses.Count));
+        });
     }
 
     [HttpPatch("{id:guid}/status")]
@@ -66,12 +57,7 @@ public sealed class WorkItemsController(
         var command = new ChangeWorkItemStatusCommand(id, request.Status);
         var result = await changeWorkItemStatus.ExecuteAsync(command, cancellationToken);
 
-        if (!result.Succeeded)
-        {
-            return BadRequest(new { error = result.ErrorMessage, failures = result.Failures });
-        }
-
-        return Ok(ToResponse(result.Value!));
+        return result.ToActionResult(workItem => Ok(ToResponse(workItem)));
     }
 
     private static WorkItemResponse ToResponse(WorkItemResult r) =>

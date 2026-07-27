@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Training.WorkItems.Application.Common;
 using Training.WorkItems.Application.WorkItems.Mapping;
 using Training.WorkItems.Application.WorkItems.Repositories;
@@ -11,7 +12,8 @@ namespace Training.WorkItems.Application.WorkItems.UseCases;
 public sealed class CreateWorkItemUseCase(
     IWorkItemRepository workItems,
     ICurrentUserContext currentUser,
-    ISystemClock clock) : ICreateWorkItemUseCase
+    ISystemClock clock,
+    ILogger<CreateWorkItemUseCase> logger) : ICreateWorkItemUseCase
 {
     public async Task<ApplicationResult<WorkItemResult>> ExecuteAsync(
         CreateWorkItemCommand command,
@@ -38,6 +40,11 @@ public sealed class CreateWorkItemUseCase(
             clock.UtcNow);
 
         await workItems.AddAsync(workItem, cancellationToken);
+
+        logger.LogInformation(
+            "Work item {WorkItemId} created for tenant {TenantId}.",
+            workItem.Id.Value,
+            workItem.TenantId.Value);
 
         return ApplicationResult<WorkItemResult>.Success(workItem.ToResult());
     }

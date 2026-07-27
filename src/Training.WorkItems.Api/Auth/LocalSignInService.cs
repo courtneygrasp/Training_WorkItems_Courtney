@@ -33,6 +33,14 @@ public sealed class LocalSignInService : ILocalSignInService
             }
         }
 
+        // If the SSO token has no tenant_id, or has one that isn't a valid GUID, inject a fixed dev tenant.
+        var tenantIdClaim = claims.FirstOrDefault(c => c.Type == "tenant_id");
+        if (tenantIdClaim is null || !Guid.TryParse(tenantIdClaim.Value, out _))
+        {
+            claims.RemoveAll(c => c.Type == "tenant_id");
+            claims.Add(new Claim("tenant_id", "00000000-0000-0000-0000-000000000001"));
+        }
+
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
 

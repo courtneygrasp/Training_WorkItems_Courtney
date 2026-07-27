@@ -46,7 +46,7 @@ public static class MapSsoEndpointExtensions
             cancellationToken);
 
         return signInResult.RedirectToHome
-            ? Results.Redirect("/")
-            : Results.Redirect("/login");
+            ? Results.Redirect("/api/workitems")
+            : Results.Redirect("/auth/start");
     }
 }

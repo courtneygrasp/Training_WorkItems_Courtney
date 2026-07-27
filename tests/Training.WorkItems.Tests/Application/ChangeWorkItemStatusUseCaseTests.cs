@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using Training.WorkItems.Application.Common;
 using Training.WorkItems.Application.WorkItems.Repositories;
 using Training.WorkItems.Application.WorkItems.UseCases;
 using Training.WorkItems.Application.WorkItems.Validation;
@@ -23,19 +24,18 @@ public sealed class ChangeWorkItemStatusUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_WhenWorkItemNotFound_ReturnsInvalidResult()
+    public async Task ExecuteAsync_WhenWorkItemNotFound_ReturnsNotFoundResult()
     {
         var useCase = CreateUseCase(new InMemoryWorkItemRepository());
         var command = new ChangeWorkItemStatusCommand(Guid.NewGuid(), WorkItemStatus.InProgress);
 
         var result = await useCase.ExecuteAsync(command, CancellationToken.None);
 
-        result.Succeeded.Should().BeFalse();
-        result.Failures.Should().ContainSingle(f => f.ErrorCode == "work-item.not-found");
+        result.Status.Should().Be(ResultStatus.NotFound);
     }
 
     [Fact]
-    public async Task ExecuteAsync_WhenUserCannotCloseWorkItems_ReturnsCloseForbiddenFailure()
+    public async Task ExecuteAsync_WhenUserCannotCloseWorkItems_ReturnsForbiddenResult()
     {
         var tenantId = TenantId.Create(Guid.NewGuid());
         var repository = new InMemoryWorkItemRepository();
@@ -47,8 +47,7 @@ public sealed class ChangeWorkItemStatusUseCaseTests
 
         var result = await useCase.ExecuteAsync(command, CancellationToken.None);
 
-        result.Succeeded.Should().BeFalse();
-        result.Failures.Should().ContainSingle(f => f.ErrorCode == "work-item.close-forbidden");
+        result.Status.Should().Be(ResultStatus.Forbidden);
     }
 
     [Fact]
@@ -69,13 +68,30 @@ public sealed class ChangeWorkItemStatusUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_WhenValidatorReturnsMultipleFailures_AllFailuresReturned()
+    public async Task ExecuteAsync_WhenWorkItemIsClosedAndReopenRequested_ReturnsInvalidResult()
+    {
+        var tenantId = TenantId.Create(Guid.NewGuid());
+        var repository = new InMemoryWorkItemRepository();
+        var workItem = CreateClosedWorkItem(tenantId);
+        await repository.AddAsync(workItem, CancellationToken.None);
+
+        var useCase = CreateUseCase(repository, tenantId);
+        var command = new ChangeWorkItemStatusCommand(workItem.Id.Value, WorkItemStatus.InProgress);
+
+        var result = await useCase.ExecuteAsync(command, CancellationToken.None);
+
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.Failures.Should().ContainSingle(f => f.ErrorCode == "work-item.closed");
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WhenWorkItemBelongsToDifferentTenant_ReturnsNotFoundResult()
     {
         var tenantId = TenantId.Create(Guid.NewGuid());
         var otherTenantId = TenantId.Create(Guid.NewGuid());
 
         // Use an ID-only repository so the item is returned even though tenant differs,
-        // allowing both wrong-tenant and closed failures to accumulate.
+        // allowing the validator to detect the wrong-tenant failure.
         var repository = new FindByIdOnlyRepository();
         var workItem = CreateClosedWorkItem(otherTenantId);
         await repository.AddAsync(workItem, CancellationToken.None);
@@ -85,10 +101,8 @@ public sealed class ChangeWorkItemStatusUseCaseTests
 
         var result = await useCase.ExecuteAsync(command, CancellationToken.None);
 
-        result.Succeeded.Should().BeFalse();
-        result.Failures.Should().HaveCountGreaterThan(1);
-        result.Failures.Should().Contain(f => f.ErrorCode == "work-item.wrong-tenant");
-        result.Failures.Should().Contain(f => f.ErrorCode == "work-item.closed");
+        // wrong-tenant maps to NotFound to avoid revealing the item exists for another tenant
+        result.Status.Should().Be(ResultStatus.NotFound);
     }
 
     private static ChangeWorkItemStatusUseCase CreateUseCase(
@@ -100,7 +114,8 @@ public sealed class ChangeWorkItemStatusUseCaseTests
             repository,
             new FakeCurrentUserContext(tenantId ?? TenantId.Create(Guid.NewGuid()), canCloseWorkItems),
             new DefaultWorkItemStatusPolicy(),
-            new ChangeWorkItemStatusValidator());
+            new ChangeWorkItemStatusValidator(),
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<ChangeWorkItemStatusUseCase>.Instance);
     }
 
     private static WorkItem CreateNewWorkItem(TenantId tenantId)
@@ -138,14 +153,8 @@ public sealed class ChangeWorkItemStatusUseCaseTests
             return Task.CompletedTask;
         }
 
-        public Task<WorkItem?> GetByIdAsync(
-            TenantId tenantId,
-            WorkItemId workItemId,
-            CancellationToken cancellationToken)
-        {
-            var workItem = _items.SingleOrDefault(x => x.Id == workItemId);
-            return Task.FromResult(workItem);
-        }
+        public Task<WorkItem?> GetByIdAsync(TenantId tenantId, WorkItemId workItemId, CancellationToken cancellationToken) =>
+            Task.FromResult(_items.FirstOrDefault(i => i.Id == workItemId));
 
         public Task<IReadOnlyCollection<WorkItem>> ListAsync(
             TenantId tenantId,

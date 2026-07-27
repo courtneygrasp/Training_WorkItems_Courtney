@@ -1,0 +1,71 @@
+# Training.WorkItems API
+# Requires VS Code REST Client extension or Visual Studio 2022+
+#
+# AUTH SETUP (required before any WorkItems request):
+#   1. Run the app and open https://localhost:7046/auth/start in your browser
+#   2. Complete the SSO login flow
+#   3. Open browser DevTools → Application → Cookies → https://localhost:7046
+#   4. Copy the value of the session cookie and paste it below
+
+@baseUrl = https://localhost:7046
+@sessionCookie = .AspNetCore.Cookies=<paste-cookie-value-here>
+
+# Replace this after creating a work item (use the id from the response)
+@workItemId = 00000000-0000-0000-0000-000000000000
+
+
+### ─── Create Work Item ───────────────────────────────────────────────────────
+
+POST {{baseUrl}}/api/workitems
+Content-Type: application/json
+Cookie: {{sessionCookie}}
+
+{
+  "title": "My first work item",
+  "description": "Testing the live database connection"
+}
+
+
+### ─── List All Work Items ────────────────────────────────────────────────────
+
+GET {{baseUrl}}/api/workitems
+Cookie: {{sessionCookie}}
+
+
+### ─── Get Work Item By ID ────────────────────────────────────────────────────
+
+GET {{baseUrl}}/api/workitems/{{workItemId}}
+Cookie: {{sessionCookie}}
+
+
+### ─── Change Status → InProgress ────────────────────────────────────────────
+
+PATCH {{baseUrl}}/api/workitems/{{workItemId}}/status
+Content-Type: application/json
+Cookie: {{sessionCookie}}
+
+{
+  "status": 1
+}
+
+
+### ─── Change Status → Completed ─────────────────────────────────────────────
+
+PATCH {{baseUrl}}/api/workitems/{{workItemId}}/status
+Content-Type: application/json
+Cookie: {{sessionCookie}}
+
+{
+  "status": 2
+}
+
+
+### ─── Change Status → Closed ─────────────────────────────────────────────────
+
+PATCH {{baseUrl}}/api/workitems/{{workItemId}}/status
+Content-Type: application/json
+Cookie: {{sessionCookie}}
+
+{
+  "status": 3
+}
