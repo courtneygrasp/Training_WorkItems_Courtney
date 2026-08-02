@@ -1,0 +1,195 @@
+{
+  "info": {
+    "name": "Training.WorkItems",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:7046",
+      "type": "string"
+    },
+    {
+      "key": "workItemId",
+      "value": "00000000-0000-0000-0000-000000000000",
+      "type": "string",
+      "description": "Replace with an ID from a Create or List response."
+    },
+    {
+      "key": "correlationId",
+      "value": "",
+      "type": "string",
+      "description": "Optional: 32-char lowercase hex (e.g. Guid.NewGuid().ToString(\"N\")). Leave blank to let the server generate one."
+    }
+  ],
+  "auth": {
+    "type": "noauth"
+  },
+  "item": [
+    {
+      "name": "Work Items",
+      "item": [
+        {
+          "name": "Create Work Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-correlation-id",
+                "value": "{{correlationId}}",
+                "description": "Optional correlation ID for request tracing."
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Fix login bug\",\n  \"description\": \"Users cannot sign in with SSO.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/workitems",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "workitems"]
+            },
+            "description": "Creates a new work item for the authenticated user's tenant.\nRequires authentication. Copy the returned `id` into the `workItemId` collection variable."
+          }
+        },
+        {
+          "name": "List Work Items",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-correlation-id",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/workitems",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "workitems"]
+            },
+            "description": "Lists all work items for the authenticated user's tenant."
+          }
+        },
+        {
+          "name": "Get Work Item By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-correlation-id",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/workitems/{{workItemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "workitems", "{{workItemId}}"]
+            },
+            "description": "Returns a single work item by ID, scoped to the authenticated user's tenant."
+          }
+        },
+        {
+          "name": "Change Work Item Status – InProgress",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-correlation-id",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/workitems/{{workItemId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "workitems", "{{workItemId}}", "status"]
+            },
+            "description": "Changes the work item status. Status values: 0=New, 1=InProgress, 2=Completed, 3=Closed.\nClosing (status=3) requires the `can_close_work_items` claim. A missing permission returns 403.\nAn invalid transition (e.g. Closed → InProgress) returns 400."
+          }
+        },
+        {
+          "name": "Change Work Item Status – Completed",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-correlation-id",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/workitems/{{workItemId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "workitems", "{{workItemId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Change Work Item Status – Closed",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-correlation-id",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/workitems/{{workItemId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "workitems", "{{workItemId}}", "status"]
+            },
+            "description": "Closing a work item requires the `can_close_work_items` claim. Returns 403 if the authenticated user lacks this permission."
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -6,6 +6,8 @@ using Training.WorkItems.Application.WorkItems.Services;
 using Training.WorkItems.Application.WorkItems.Validation;
 using Training.WorkItems.Domain.Common;
 using Training.WorkItems.Domain.Common.Validation;
+using Training.WorkItems.Domain.WorkItems.Entities;
+using Training.WorkItems.Domain.WorkItems.Exceptions;
 using Training.WorkItems.Domain.WorkItems.Services;
 using Training.WorkItems.Domain.WorkItems.ValueTypes;
 
@@ -13,6 +15,7 @@ namespace Training.WorkItems.Application.WorkItems.UseCases;
 
 public sealed class ChangeWorkItemStatusUseCase(
     IWorkItemRepository workItems,
+    IWorkItemStatusChangeRepository statusChanges,
     ICurrentUserContext currentUser,
     IWorkItemStatusPolicy statusPolicy,
     IValidator<ChangeWorkItemStatusValidationContext> validator,
@@ -24,62 +27,61 @@ public sealed class ChangeWorkItemStatusUseCase(
     {
         Guard.NotNull(command);
 
+        var tenantId = currentUser.TenantId;
         var workItemId = WorkItemId.Create(command.WorkItemId);
-        var workItem = await workItems.GetByIdAsync(currentUser.TenantId, workItemId, cancellationToken);
 
-        var context = new ChangeWorkItemStatusValidationContext(
-            workItem,
-            currentUser.TenantId,
-            currentUser.CanCloseWorkItems,
-            command.RequestedStatus);
+        var workItem = await workItems.GetByIdAsync(tenantId, workItemId, cancellationToken);
 
-        var validationResult = validator.Validate(context);
-
-        if (!validationResult.Succeeded)
-        {
-            return MapFailuresToResult(validationResult.Failures, workItemId.Value);
-        }
-
-        workItem!.ChangeStatus(command.RequestedStatus, statusPolicy);
-
-        await workItems.UpdateAsync(workItem, cancellationToken);
-
-        logger.LogInformation(
-            "Work item {WorkItemId} status changed to {Status}.",
-            workItem.Id.Value,
-            command.RequestedStatus);
-
-        return ApplicationResult<WorkItemResult>.Success(workItem.ToResult());
-    }
-
-    private ApplicationResult<WorkItemResult> MapFailuresToResult(
-        IReadOnlyList<ValidationFailure> failures,
-        Guid workItemId)
-    {
-        if (failures.Any(f => f.ErrorCode is "work-item.not-found" or "work-item.wrong-tenant"))
+        if (workItem is null)
         {
             logger.LogInformation(
-                "Work item {WorkItemId} not found or inaccessible for tenant {TenantId}.",
-                workItemId,
-                currentUser.TenantId.Value);
+                "Work item {WorkItemId} was not found for tenant {TenantId} during a status change.",
+                workItemId.Value,
+                tenantId.Value);
 
             return ApplicationResult<WorkItemResult>.NotFound();
         }
 
-        if (failures.Any(f => f.ErrorCode == "work-item.close-forbidden"))
-        {
-            logger.LogWarning(
-                "User {UserId} attempted to close work item {WorkItemId} without close permission.",
-                currentUser.UserId,
-                workItemId);
+        var validation = validator.Validate(new ChangeWorkItemStatusValidationContext(
+            WorkItem: workItem,
+            CurrentTenantId: tenantId,
+            CanCloseWorkItems: currentUser.CanCloseWorkItems,
+            RequestedStatus: command.RequestedStatus));
 
-            return ApplicationResult<WorkItemResult>.Forbidden();
+        validation.ThrowValidation(failure =>
+            new WorkItemStatusChangeValidationException(
+                errorCode: failure.ErrorCode,
+                target: failure.PropertyName));
+
+        try
+        {
+            workItem.ChangeStatus(command.RequestedStatus, statusPolicy);
+        }
+        catch (InvalidWorkItemStateException ex)
+        {
+            logger.LogInformation(
+                "Rejected status transition for work item {WorkItemId} in tenant {TenantId} to {Status}.",
+                workItem.Id.Value,
+                workItem.TenantId.Value,
+                command.RequestedStatus);
+
+            return ApplicationResult<WorkItemResult>.Invalid(ex.Message);
         }
 
-        logger.LogInformation(
-            "Invalid status transition requested for work item {WorkItemId}.",
-            workItemId);
+        var auditRecord = WorkItemAuditRecord.Create(
+            workItem.Id,
+            workItem.TenantId,
+            currentUser.UserId,
+            workItem.Status);
 
-        return ApplicationResult<WorkItemResult>.Invalid(failures);
+        await statusChanges.PersistAsync(workItem, auditRecord, cancellationToken);
+
+        logger.LogInformation(
+            "Changed work item {WorkItemId} status to {Status} for tenant {TenantId}.",
+            workItem.Id.Value,
+            workItem.Status,
+            workItem.TenantId.Value);
+
+        return ApplicationResult<WorkItemResult>.Success(workItem.ToResult());
     }
 }

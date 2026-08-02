@@ -9,6 +9,7 @@ namespace Training.WorkItems.Infrastructure.WorkItems.Storage;
 public static class WorkItemStorageRegistration
 {
     private const string ResourceName = "WorkItemStorage";
+    private const string AuditResourceName = "WorkItemAuditStorage";
 
     public static IServiceCollection AddWorkItemStorage(this IServiceCollection services)
     {
@@ -18,7 +19,12 @@ public static class WorkItemStorageRegistration
                 provider
                     .GetRequiredService<ConnectorFactory>()
                     .CreateAsync<WorkItemStorageRecord>(ResourceName))
-            .AddScoped<IWorkItemRepository, SqlWorkItemRepository>();
+            .AddScoped(provider =>
+                provider
+                    .GetRequiredService<ConnectorFactory>()
+                    .CreateAsync<WorkItemAuditStorageRecord>(AuditResourceName))
+            .AddScoped<IWorkItemRepository, SqlWorkItemRepository>()
+            .AddScoped<IWorkItemStatusChangeRepository, SqlWorkItemStatusChangeRepository>();
 
         return services;
     }

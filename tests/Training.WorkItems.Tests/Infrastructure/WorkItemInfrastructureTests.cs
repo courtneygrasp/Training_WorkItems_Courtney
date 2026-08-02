@@ -173,4 +173,28 @@ public sealed class WorkItemInfrastructureTests
             WorkItemTitle.Create(title),
             null,
             DateTimeOffset.UtcNow);
+
+    // WorkItemAuditStorageMappings
+
+    [Fact]
+    public void WorkItemAuditStorageMappings_ToStorageRecord_MapsAllFields()
+    {
+        var tenantId = TenantId.Create(Guid.NewGuid());
+        var workItem = CreateWorkItem(tenantId, "Fix login bug");
+        workItem.ChangeStatus(WorkItemStatus.InProgress, new Training.WorkItems.Domain.WorkItems.Services.DefaultWorkItemStatusPolicy());
+        var auditRecord = WorkItemAuditRecord.Create(
+            workItem.Id,
+            workItem.TenantId,
+            Guid.NewGuid(),
+            workItem.Status);
+
+        var record = auditRecord.ToStorageRecord();
+
+        record.AuditId.Should().Be(auditRecord.Id);
+        record.WorkItemId.Should().Be(auditRecord.WorkItemId.Value);
+        record.TenantId.Should().Be(auditRecord.TenantId.Value);
+        record.UserId.Should().Be(auditRecord.UserId);
+        record.Status.Should().Be("InProgress");
+        record.ChangedAt.Should().Be(auditRecord.ChangedAt);
+    }
 }

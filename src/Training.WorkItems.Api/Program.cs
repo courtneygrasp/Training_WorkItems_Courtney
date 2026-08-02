@@ -7,6 +7,7 @@ using Microsoft.Data.SqlClient;
 using Training.WorkItems.Api.Auth;
 using Training.WorkItems.Api.CompositionRoot;
 using Training.WorkItems.Core.DependencyInjection;
+using Training.WorkItems.Domain.Common;
 
 DbProviderFactories.RegisterFactory("System.Data.SqlClient", SqlClientFactory.Instance);
 
@@ -42,6 +43,23 @@ app.UseExceptionHandler(exceptionHandlerApp =>
     {
         var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
         var exceptionFeature = context.Features.Get<IExceptionHandlerFeature>();
+
+        if (exceptionFeature?.Error is DomainException domainEx)
+        {
+            var statusCode = domainEx.ErrorCode == "work-item.close-forbidden"
+                ? StatusCodes.Status403Forbidden
+                : StatusCodes.Status400BadRequest;
+
+            context.Response.StatusCode = statusCode;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = domainEx.Message,
+                errorCode = domainEx.ErrorCode
+            });
+            return;
+        }
+
         if (exceptionFeature?.Error is { } error)
         {
             logger.LogError(error, "Unhandled exception processing request.");
