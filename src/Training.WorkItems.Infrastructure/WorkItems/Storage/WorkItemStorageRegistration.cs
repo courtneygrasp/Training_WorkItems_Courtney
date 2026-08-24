@@ -10,6 +10,7 @@ public static class WorkItemStorageRegistration
 {
     private const string ResourceName = "WorkItemStorage";
     private const string AuditResourceName = "WorkItemAuditStorage";
+    private const string NoteResourceName = "WorkItemNoteStorage";
 
     public static IServiceCollection AddWorkItemStorage(this IServiceCollection services)
     {
@@ -23,8 +24,13 @@ public static class WorkItemStorageRegistration
                 provider
                     .GetRequiredService<ConnectorFactory>()
                     .CreateAsync<WorkItemAuditStorageRecord>(AuditResourceName))
+            .AddScoped(provider =>
+                provider
+                    .GetRequiredService<ConnectorFactory>()
+                    .CreateAsync<WorkItemNoteStorageRecord>(NoteResourceName))
             .AddScoped<IWorkItemRepository, SqlWorkItemRepository>()
-            .AddScoped<IWorkItemStatusChangeRepository, SqlWorkItemStatusChangeRepository>();
+            .AddScoped<IWorkItemStatusChangeRepository, SqlWorkItemStatusChangeRepository>()
+            .AddScoped<IWorkItemNoteRepository, SqlWorkItemNoteRepository>();
 
         return services;
     }

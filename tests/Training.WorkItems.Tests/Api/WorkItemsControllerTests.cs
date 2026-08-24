@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Training.WorkItems.Api.WorkItems.Controllers;
 using Training.WorkItems.Api.WorkItems.Contracts.Requests;
+using Training.WorkItems.Api.WorkItems.Contracts.Responses;
 using Training.WorkItems.Application.Common;
 using Training.WorkItems.Application.WorkItems.UseCases;
 using Training.WorkItems.Domain.WorkItems.Enums;
@@ -161,5 +162,80 @@ public sealed class WorkItemsControllerTests
             CancellationToken.None);
 
         actionResult.Should().BeOfType<ForbidResult>();
+    }
+
+    [Fact]
+    public async Task AddNote_WhenUseCaseSucceeds_Returns201Created()
+    {
+        var workItemId = Guid.NewGuid();
+        var noteId = Guid.NewGuid();
+        _addWorkItemNote
+            .Setup(x => x.ExecuteAsync(It.IsAny<AddWorkItemNoteCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(ApplicationResult<AddWorkItemNoteResult>.Success(
+                new AddWorkItemNoteResult(noteId, workItemId, "A note.", DateTimeOffset.UtcNow)));
+
+        var actionResult = await CreateController().AddNote(
+            workItemId,
+            new AddWorkItemNoteRequest { Content = "A note." },
+            CancellationToken.None);
+
+        actionResult.Result.Should().BeOfType<CreatedAtActionResult>()
+            .Which.StatusCode.Should().Be(201);
+    }
+
+    [Fact]
+    public async Task AddNote_WhenWorkItemNotFound_Returns404NotFound()
+    {
+        _addWorkItemNote
+            .Setup(x => x.ExecuteAsync(It.IsAny<AddWorkItemNoteCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(ApplicationResult<AddWorkItemNoteResult>.NotFound());
+
+        var actionResult = await CreateController().AddNote(
+            Guid.NewGuid(),
+            new AddWorkItemNoteRequest { Content = "A note." },
+            CancellationToken.None);
+
+        actionResult.Result.Should().BeOfType<NotFoundResult>()
+            .Which.StatusCode.Should().Be(404);
+    }
+
+    [Fact]
+    public async Task AddNote_WhenNoteTextInvalid_Returns400BadRequest()
+    {
+        _addWorkItemNote
+            .Setup(x => x.ExecuteAsync(It.IsAny<AddWorkItemNoteCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(ApplicationResult<AddWorkItemNoteResult>.Invalid("Note text cannot exceed 2000 characters."));
+
+        var actionResult = await CreateController().AddNote(
+            Guid.NewGuid(),
+            new AddWorkItemNoteRequest { Content = new string('a', 2001) },
+            CancellationToken.None);
+
+        actionResult.Result.Should().BeOfType<BadRequestObjectResult>()
+            .Which.StatusCode.Should().Be(400);
+    }
+
+    [Fact]
+    public async Task AddNote_ResponseContainsCorrectNoteText()
+    {
+        var workItemId = Guid.NewGuid();
+        var noteId = Guid.NewGuid();
+        var createdAt = DateTimeOffset.UtcNow;
+        _addWorkItemNote
+            .Setup(x => x.ExecuteAsync(It.IsAny<AddWorkItemNoteCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(ApplicationResult<AddWorkItemNoteResult>.Success(
+                new AddWorkItemNoteResult(noteId, workItemId, "A note.", createdAt)));
+
+        var actionResult = await CreateController().AddNote(
+            workItemId,
+            new AddWorkItemNoteRequest { Content = "A note." },
+            CancellationToken.None);
+
+        var created = actionResult.Result.Should().BeOfType<CreatedAtActionResult>().Subject;
+        var response = created.Value.Should().BeOfType<WorkItemNoteResponse>().Subject;
+        response.NoteId.Should().Be(noteId);
+        response.WorkItemId.Should().Be(workItemId);
+        response.NoteText.Should().Be("A note.");
+        response.CreatedAt.Should().Be(createdAt);
     }
 }

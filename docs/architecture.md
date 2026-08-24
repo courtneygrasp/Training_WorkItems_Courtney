@@ -117,3 +117,27 @@ Note: `Training.WorkItems.Application/Common/` currently holds `ApplicationResul
 ## Test Layer
 
 Uses Moq for simple collaborator isolation, Awesome Assertions for readable assertions, and in-memory fakes when behavior is more important than interaction verification. Integration tests target a real database and SQL infrastructure — not mocks — to catch migration and mapping issues at the boundary.
+
+## Features
+
+### AddWorkItemNote
+
+Adds a text note to an existing work item. Full flow:
+
+```
+POST /api/workitems/{id}/notes
+  → AddWorkItemNoteRequest (DataAnnotations: Required, StringLength 2000)
+  → AddWorkItemNoteCommand (WorkItemId, NoteText)
+  → AddWorkItemNoteUseCase
+      validates WorkItemNoteText (2000-char domain invariant)
+      GetByIdAsync(tenantId, workItemId) → 404 if not found or foreign tenant
+      WorkItemNote.Create(...)
+      IWorkItemNoteRepository.AddAsync(...)
+  → AddWorkItemNoteResult
+  → WorkItemNoteResponse (JsonPropertyName pins: noteId, workItemId, noteText, createdAt)
+  → 201 Created
+```
+
+Storage: `dbo.WorkItemNoteStorageRecord` — FK to `WorkItemStorageRecord(WorkItemId)`. Index on `(WorkItemId, TenantId)`.
+
+Value type: `WorkItemNoteText` enforces the not-null, not-whitespace, and 2000-character invariants.

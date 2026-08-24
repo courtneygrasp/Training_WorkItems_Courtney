@@ -1,7 +1,9 @@
+using System.Text.Json.Serialization;
+
 namespace Training.WorkItems.Api.WorkItems.Contracts.Responses;
 
 public sealed record WorkItemNoteResponse(
-    Guid NoteId,
-    Guid WorkItemId,
-    string Content,
-    DateTimeOffset CreatedAt);
+    [property: JsonPropertyName("noteId")] Guid NoteId,
+    [property: JsonPropertyName("workItemId")] Guid WorkItemId,
+    [property: JsonPropertyName("noteText")] string NoteText,
+    [property: JsonPropertyName("createdAt")] DateTimeOffset CreatedAt);

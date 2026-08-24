@@ -188,6 +188,38 @@
             },
             "description": "Closing a work item requires the `can_close_work_items` claim. Returns 403 if the authenticated user lacks this permission."
           }
+        },
+        {
+          "name": "Add Work Item Note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-correlation-id",
+                "value": "{{correlationId}}",
+                "description": "Optional correlation ID for request tracing."
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"This note was added via the API.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/workitems/{{workItemId}}/notes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "workitems", "{{workItemId}}", "notes"]
+            },
+            "description": "Adds a text note to an existing work item. Requires authentication. The work item must belong to the authenticated user's tenant.\nBlank or oversized note text returns 400. A missing or foreign work item ID returns 404."
+          }
         }
       ]
     }

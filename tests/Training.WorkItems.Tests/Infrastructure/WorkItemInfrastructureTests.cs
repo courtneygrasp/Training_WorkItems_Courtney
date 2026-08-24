@@ -4,6 +4,7 @@ using Training.WorkItems.Domain.WorkItems.Enums;
 using Training.WorkItems.Domain.WorkItems.ValueTypes;
 using Training.WorkItems.Infrastructure.WorkItems.Repositories;
 using Training.WorkItems.Infrastructure.WorkItems.Services;
+using NoteRepo = Training.WorkItems.Tests.Application.WorkItems.Fakes.InMemoryWorkItemNoteRepository;
 
 namespace Training.WorkItems.Tests.Infrastructure;
 
@@ -172,6 +173,54 @@ public sealed class WorkItemInfrastructureTests
             tenantId,
             WorkItemTitle.Create(title),
             null,
+            DateTimeOffset.UtcNow);
+
+    // InMemoryWorkItemNoteRepository
+
+    [Fact]
+    public async Task InMemoryNoteRepository_AddAsync_StoresNote()
+    {
+        var repo = new NoteRepo();
+        var note = CreateNote(TenantId.Create(Guid.NewGuid()), "Test note.");
+
+        await repo.AddAsync(note, CancellationToken.None);
+
+        repo.Notes.Should().ContainSingle()
+            .Which.Id.Should().Be(note.Id);
+    }
+
+    // WorkItemNoteStorageMappings
+
+    [Fact]
+    public void WorkItemNoteStorageMappings_ToStorageRecord_MapsAllFields()
+    {
+        var tenantId = TenantId.Create(Guid.NewGuid());
+        var workItemId = WorkItemId.Create(Guid.NewGuid());
+        var authorId = Guid.NewGuid();
+        var createdAt = DateTimeOffset.UtcNow;
+        var note = WorkItemNote.Create(
+            workItemId,
+            tenantId,
+            authorId,
+            WorkItemNoteText.Create("Fix the login page."),
+            createdAt);
+
+        var record = note.ToStorageRecord();
+
+        record.NoteId.Should().Be(note.Id);
+        record.WorkItemId.Should().Be(workItemId.Value);
+        record.TenantId.Should().Be(tenantId.Value);
+        record.AuthorId.Should().Be(authorId);
+        record.NoteText.Should().Be("Fix the login page.");
+        record.CreatedAt.Should().Be(createdAt);
+    }
+
+    private static WorkItemNote CreateNote(TenantId tenantId, string noteText) =>
+        WorkItemNote.Create(
+            WorkItemId.Create(Guid.NewGuid()),
+            tenantId,
+            Guid.NewGuid(),
+            WorkItemNoteText.Create(noteText),
             DateTimeOffset.UtcNow);
 
     // WorkItemAuditStorageMappings

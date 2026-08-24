@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Training.WorkItems.Api.WorkItems.Contracts.Requests;
 using Training.WorkItems.Api.WorkItems.Contracts.Responses;
+using Training.WorkItems.Api.WorkItems.Mapping;
 using Training.WorkItems.Application.WorkItems.UseCases;
 
 namespace Training.WorkItems.Api.WorkItems.Controllers;
@@ -62,7 +63,7 @@ public sealed class WorkItemsController(
     }
 
     [HttpPost("{id:guid}/notes")]
-    public async Task<IActionResult> AddNote(
+    public async Task<ActionResult<WorkItemNoteResponse>> AddNote(
         Guid id,
         [FromBody] AddWorkItemNoteRequest request,
         CancellationToken cancellationToken)
@@ -70,13 +71,10 @@ public sealed class WorkItemsController(
         var command = new AddWorkItemNoteCommand(id, request.Content);
         var result = await addWorkItemNote.ExecuteAsync(command, cancellationToken);
 
-        return result.ToActionResult(note =>
-            CreatedAtAction(nameof(AddNote), new { id }, ToNoteResponse(note)));
+        return (ActionResult<WorkItemNoteResponse>)(ActionResult)result.ToActionResult(note =>
+            CreatedAtAction(nameof(AddNote), new { id }, note.ToApiResponse()));
     }
 
     private static WorkItemResponse ToResponse(WorkItemResult r) =>
         new(r.Id, r.Title, r.Description, r.Status, r.CreatedAt);
-
-    private static WorkItemNoteResponse ToNoteResponse(AddWorkItemNoteResult r) =>
-        new(r.NoteId, r.WorkItemId, r.Content, r.CreatedAt);
 }
