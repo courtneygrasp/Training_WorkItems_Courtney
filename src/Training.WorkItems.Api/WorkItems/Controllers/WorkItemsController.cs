@@ -13,7 +13,8 @@ public sealed class WorkItemsController(
     ICreateWorkItemUseCase createWorkItem,
     IChangeWorkItemStatusUseCase changeWorkItemStatus,
     IGetWorkItemByIdUseCase getWorkItemById,
-    IListWorkItemsUseCase listWorkItems) : ControllerBase
+    IListWorkItemsUseCase listWorkItems,
+    IAddWorkItemNoteUseCase addWorkItemNote) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Create(
@@ -60,6 +61,22 @@ public sealed class WorkItemsController(
         return result.ToActionResult(workItem => Ok(ToResponse(workItem)));
     }
 
+    [HttpPost("{id:guid}/notes")]
+    public async Task<IActionResult> AddNote(
+        Guid id,
+        [FromBody] AddWorkItemNoteRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new AddWorkItemNoteCommand(id, request.Content);
+        var result = await addWorkItemNote.ExecuteAsync(command, cancellationToken);
+
+        return result.ToActionResult(note =>
+            CreatedAtAction(nameof(AddNote), new { id }, ToNoteResponse(note)));
+    }
+
     private static WorkItemResponse ToResponse(WorkItemResult r) =>
         new(r.Id, r.Title, r.Description, r.Status, r.CreatedAt);
+
+    private static WorkItemNoteResponse ToNoteResponse(AddWorkItemNoteResult r) =>
+        new(r.NoteId, r.WorkItemId, r.Content, r.CreatedAt);
 }

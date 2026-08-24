@@ -15,9 +15,10 @@ public sealed class WorkItemsControllerTests
     private readonly Mock<IChangeWorkItemStatusUseCase> _changeWorkItemStatus = new(MockBehavior.Strict);
     private readonly Mock<IGetWorkItemByIdUseCase> _getWorkItemById = new(MockBehavior.Strict);
     private readonly Mock<IListWorkItemsUseCase> _listWorkItems = new(MockBehavior.Strict);
+    private readonly Mock<IAddWorkItemNoteUseCase> _addWorkItemNote = new(MockBehavior.Strict);
 
     private WorkItemsController CreateController() =>
-        new(_createWorkItem.Object, _changeWorkItemStatus.Object, _getWorkItemById.Object, _listWorkItems.Object);
+        new(_createWorkItem.Object, _changeWorkItemStatus.Object, _getWorkItemById.Object, _listWorkItems.Object, _addWorkItemNote.Object);
 
     [Fact]
     public async Task Create_WhenUseCaseSucceeds_Returns201Created()

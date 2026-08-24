@@ -14,6 +14,7 @@ public static class WorkItemsApplicationRegistration
         services.AddScoped<IChangeWorkItemStatusUseCase, ChangeWorkItemStatusUseCase>();
         services.AddScoped<IGetWorkItemByIdUseCase, GetWorkItemByIdUseCase>();
         services.AddScoped<IListWorkItemsUseCase, ListWorkItemsUseCase>();
+        services.AddScoped<IAddWorkItemNoteUseCase, AddWorkItemNoteUseCase>();
 
         services.AddSingleton<IWorkItemStatusPolicy, DefaultWorkItemStatusPolicy>();
         services.AddSingleton<IValidator<ChangeWorkItemStatusValidationContext>, ChangeWorkItemStatusValidator>();
