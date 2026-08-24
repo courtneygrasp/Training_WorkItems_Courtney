@@ -13,6 +13,7 @@ using Training.WorkItems.Application.WorkItems.Repositories;
 using Training.WorkItems.Application.WorkItems.Services;
 using Training.WorkItems.Infrastructure.WorkItems.Services;
 using Training.WorkItems.Tests.Application.WorkItems.Fakes;
+using NoteRepo = Training.WorkItems.Tests.Application.WorkItems.Fakes.InMemoryWorkItemNoteRepository;
 
 namespace Training.WorkItems.Tests.Api;
 
@@ -87,6 +88,8 @@ public sealed class CorrelationWebApplicationFactory : WebApplicationFactory<Pro
 
             services.AddScoped<ICurrentUserContext, DefaultCurrentUserContext>();
             services.AddScoped<IWorkItemRepository>(_ => new InMemoryWorkItemRepository());
+            services.AddScoped<IWorkItemStatusChangeRepository>(_ => new InMemoryWorkItemStatusChangeRepository());
+            services.AddScoped<IWorkItemNoteRepository>(_ => new NoteRepo());
         });
     }
 }
